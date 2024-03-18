@@ -31,7 +31,7 @@ class TruthDareInteractions(discord.ui.View):
     async def truth_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         await self.disable_buttons(interaction)
         await interaction.followup.send(
-            embed=build_embed(generate_truth(), "TRUTH", ctx.interaction.user),
+            embed=build_embed(generate_truth(), "TRUTH", interaction.user),
             view=TruthDareInteractions()
         )
 
@@ -39,7 +39,7 @@ class TruthDareInteractions(discord.ui.View):
     async def dare_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         await self.disable_buttons(interaction)
         await interaction.followup.send(
-            embed=build_embed(generate_dare(), "DARE", ctx.interaction.user),
+            embed=build_embed(generate_dare(), "DARE", interaction.user),
             view=TruthDareInteractions()
         )
 
@@ -52,7 +52,7 @@ class TruthDareInteractions(discord.ui.View):
             chosen_generator = generate_dare
             chosen_type = "DARE (RANDOM)"
         await interaction.followup.send(
-            embed=build_embed(chosen_generator(), chosen_type, ctx.interaction.user),
+            embed=build_embed(chosen_generator(), chosen_type, interaction.user),
             view=TruthDareInteractions()
         )
 
