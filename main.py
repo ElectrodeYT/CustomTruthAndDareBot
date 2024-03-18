@@ -30,21 +30,31 @@ class TruthDareInteractions(discord.ui.View):
     @discord.ui.button(label="Truth", style=discord.ButtonStyle.green)
     async def truth_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         await self.disable_buttons(interaction)
-        await interaction.followup.send(generate_truth(), view=TruthDareInteractions())
+        await interaction.followup.send(
+            embed=build_embed(generate_truth(), "TRUTH", ctx.interaction.user),
+            view=TruthDareInteractions()
+        )
 
     @discord.ui.button(label="Dare", style=discord.ButtonStyle.red)
     async def dare_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         await self.disable_buttons(interaction)
-        await interaction.followup.send(generate_dare(), view=TruthDareInteractions())
+        await interaction.followup.send(
+            embed=build_embed(generate_dare(), "DARE", ctx.interaction.user),
+            view=TruthDareInteractions()
+        )
 
     @discord.ui.button(label="Random", style=discord.ButtonStyle.blurple)
     async def random_button(self, interaction: discord.Interaction, button: discord.ui.Button):
-        await self.disable_buttons(interaction)
         if random.random() < 0.5:
             chosen_generator = generate_truth
+            chosen_type = "TRUTH (RANDOM)"
         else:
             chosen_generator = generate_dare
-        await interaction.followup.send(chosen_generator(), view=TruthDareInteractions())
+            chosen_type = "DARE (RANDOM)"
+        await interaction.followup.send(
+            embed=build_embed(chosen_generator(), chosen_type, ctx.interaction.user),
+            view=TruthDareInteractions()
+        )
 
 
 @bot.hybrid_command()
@@ -67,10 +77,10 @@ async def dare(ctx):
 async def random_choice(ctx):
     if random.random() < 0.5:
         chosen_generator = generate_truth
-        chosen_type = "TRUTH"
+        chosen_type = "TRUTH (RANDOM)"
     else:
         chosen_generator = generate_dare
-        chosen_type = "DARE"
+        chosen_type = "DARE (RANDOM)"
     await ctx.send(
         embed=build_embed(chosen_generator(), chosen_type, ctx.interaction.user),
         view=TruthDareInteractions()
