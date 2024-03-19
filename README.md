@@ -1,8 +1,9 @@
 # Custom Truth and Dare Bot
 
-This is a somewhat easy to customize Truth and Dare bot.
+This is a somewhat easy to customize Truth and Dare bot. The truth and dares can also be integrated into other bots by
+including `TruthDareCog` from `truthdare.py`.
 
-The configuration is simple: create a `config.json` file with the following:
+The configuration for the included bot is simple: create a `config.json` file with the following:
 
 ```json
 {
