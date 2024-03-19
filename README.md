@@ -12,4 +12,6 @@ The configuration for the included bot is simple: create a `config.json` file wi
 }
 ```
 
-Two files are used to add truths and dares, simply called `truths.txt` and `dares.txt`. Each line is a truth or a dare.
+Truths and dares are seperated into categories; each category is a file in a folder called `truths` or `dares`. A
+category may be present in either one of both of the types; that is to say you may have the same category in truths and
+dares, or may have a category where you only have truths or dares.
