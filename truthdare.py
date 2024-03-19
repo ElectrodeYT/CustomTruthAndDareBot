@@ -49,7 +49,7 @@ def generate_dare(category=None) -> tuple[str, str]:
 def build_embed(message, category, type, requestor, category_was_random) -> discord.Embed:
     embed = discord.Embed(title=message)
     embed.set_author(name=f"Requested by {requestor.name}", icon_url=requestor.avatar.url)
-    embed.set_footer(text=f"Type: {type}   Category: {category}" + " (Random)" if category_was_random else "")
+    embed.set_footer(text=f"Type: {type}   Category: {category}" + (" (Random)" if category_was_random else ""))
     return embed
 
 
