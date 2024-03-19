@@ -54,7 +54,7 @@ def build_embed(message, category, type, requestor, category_was_random) -> disc
 
 
 class TruthDareInteractions(discord.ui.View):
-    def __init__(self, *, timeout=180, category=None):
+    def __init__(self, *, timeout=None, category=None):
         super().__init__(timeout=timeout)
         self.category = category
 
