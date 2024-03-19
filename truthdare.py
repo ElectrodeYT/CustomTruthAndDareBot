@@ -21,7 +21,7 @@ def read_file_lines(file) -> []:
 def read_folder_into_map(folder) -> {}:
     ret = {}
 
-    for subdir, dirs, files in os.walk(os.path.join(os.path.dirname(__file__), folder)):
+    for subdir, dirs, files in os.walk(folder):
         for file in files:
             ret[str(Path(file).with_suffix(""))] = read_file_lines(os.path.join(subdir, file))
 
