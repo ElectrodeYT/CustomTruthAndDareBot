@@ -36,6 +36,33 @@ def read_folder_into_map(folder) -> {}:
 truths = read_folder_into_map("truths")
 dares = read_folder_into_map("dares")
 
+truth_cats = [value for value in truths if value not in dares]
+dare_cats = [value for value in dares if value not in truths]
+both_cats = [value for value in list(truths.keys()) if value in list(dares.keys())]
+
+# Pre-calculate truth or dare chances for no category and all categories
+categories_truthordare_chance = {}
+random_category_truthordare_chance = 0.5
+
+total_count_truths = 0
+total_count_dares = 0
+
+for category in both_cats:
+    categories_truthordare_chance[category] = len(truths[category]) / (len(dares[category]) + len(truths[category]))
+    total_count_truths += len(truths[category])
+    total_count_dares += len(dares[category])
+    print(f"category {category} chance: {categories_truthordare_chance[category]}")
+
+for category in truth_cats:
+    total_count_truths += len(truths[category])
+
+for category in dare_cats:
+    total_count_dares += len(dares[category])
+
+print(f"total number of truths: {total_count_truths}; total number of dares: {total_count_dares}")
+
+random_category_truthordare_chance = total_count_truths / (total_count_dares + total_count_truths)
+print(f"random category truth chance: {random_category_truthordare_chance}")
 
 def generate_truth(category=None) -> tuple[str, str]:
     if category is None:
@@ -93,7 +120,12 @@ class TruthDareInteractions(discord.ui.View):
 
     @discord.ui.button(label="Random", style=discord.ButtonStyle.blurple)
     async def random_button(self, interaction: discord.Interaction, button: discord.ui.Button):
-        if random.random() < 0.5:
+        if self.category is None:
+            chance = random_category_truthordare_chance
+        else:
+            chance = categories_truthordare_chance[self.category]
+
+        if random.random() < chance:
             chosen_generator = generate_truth
             chosen_type = "TRUTH (RANDOM)"
         else:
@@ -139,7 +171,12 @@ class TruthDareCog(commands.Cog):
             return await ctx.send(f"Invalid category: {category} (For random truths or dares the category must have"
                                   f"both truths and dares)", ephemeral=True)
 
-        if random.random() < 0.5:
+        if category is None:
+            chance = random_category_truthordare_chance
+        else:
+            chance = categories_truthordare_chance[category]
+
+        if random.random() < chance:
             chosen_generator = generate_truth
             chosen_type = "TRUTH (RANDOM)"
         else:
@@ -153,14 +190,10 @@ class TruthDareCog(commands.Cog):
 
     @commands.hybrid_command()
     async def truthdare_categories(self, ctx):
-        truth_cats = [value for value in truths if value not in dares]
-        dare_cats = [value for value in dares if value not in truths]
-        both = [value for value in list(truths.keys()) if value in list(dares.keys())]
-
         embed = discord.Embed(title="List of categories")
 
-        if len(both):
-            embed.add_field(name="Both Truths and Dares", value=("> " + "\n> ".join(both)))
+        if len(both_cats):
+            embed.add_field(name="Both Truths and Dares", value=("> " + "\n> ".join(both_cats)))
         if len(truth_cats):
             embed.add_field(name="Only Truths", value=("> " + "\n> ".join(truth_cats)))
         if len(dare_cats):
