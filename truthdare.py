@@ -1,15 +1,20 @@
-import random, discord, os
+import random, discord, os, re
 from typing import Tuple, Any
+from pprint import pprint
 
 from discord.ext import commands
 from pathlib import Path
 
+note_re = re.compile("\[.*?]")
+small_re = re.compile("\(.*?\)")
 
 def read_file_lines(file) -> []:
     lines = []
     with open(file) as f:
         file_lines = f.readlines()
         for line in file_lines:
+            # Remove all notes in the line
+            line = note_re.sub("", line)
             line = line.strip()
             if line.isspace():
                 continue
@@ -47,7 +52,12 @@ def generate_dare(category=None) -> tuple[str, str]:
 
 
 def build_embed(message, category, type, requestor, category_was_random) -> discord.Embed:
-    embed = discord.Embed(title=message)
+    small_text = None
+    small_text_check = small_re.findall(message)
+    if len(small_text_check):
+        small_text = " ".join(small_text_check)
+
+    embed = discord.Embed(title=small_re.sub("", message).strip(), description=small_text)
     embed.set_author(name=f"Requested by {requestor.name}", icon_url=requestor.avatar.url)
     embed.set_footer(text=f"Type: {type}   Category: {category}" + (" (Random)" if category_was_random else ""))
     return embed
